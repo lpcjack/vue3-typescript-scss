@@ -437,6 +437,7 @@ export const useUser = defineStore("user", {
             }
             return btoa(binary);
         },
+        //文件对象转变成arrayBuffer对象
         async sendImage(file: File) {
             const reader = new FileReader();
             reader.onload = () => {
