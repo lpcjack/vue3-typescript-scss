@@ -39,10 +39,50 @@
                                 </el-icon>
                             </div>
                             <div class="option">
-                                <el-icon>
+                                <el-icon @click="triggerwallet">
                                     <WalletFilled/>
                                 </el-icon>
                             </div>
+
+<!--                            钱包界面-->
+                            <el-dialog
+                                destroy-on-close
+                                v-model="Walletvisible"
+                                title="钱包"
+                                width="45%"
+                                center
+                                align-center
+                            >
+                                <el-select
+                                    v-model="paying"
+                                    clearable
+                                    placeholder="请选择支付方式"
+                                    style="width: 240px"
+                                >
+                                    <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                    />
+                                </el-select>
+<!--                                滚动条-->
+<!--                                <el-scrollbar height="400px">-->
+<!--                                    <p v-for="item in 15" :key="item" class="scrollbar-demo-item">{{ item }}</p>-->
+<!--                                </el-scrollbar>-->
+                                <el-input
+                                    v-model="inputmoney"
+                                    style="width: 240px"
+                                    placeholder="请输入金额"
+                                    clearable
+                                />
+                                <el-button class="insure" type="primary" @click="insureWallet">确定</el-button>
+                                <el-button class="exit" type="primary" @click="exitWallet">退出</el-button>
+
+                            </el-dialog>
+
+
+
                             <div class="settings">
                                 <el-icon @click="toggleSettingsDialog">
                                     <Tools/>
@@ -443,6 +483,13 @@ const toggleSettingsDialog = () => {
     dialogVisible.value = !dialogVisible.value
     console.log(dialogVisible.value)
 }
+
+//弹出钱包界面
+const Walletvisible = ref(false)
+const triggerwallet = () => {
+    Walletvisible.value = !Walletvisible.value
+}
+
 //对话框退出按钮
 const dialogexit = () =>{
     dialogVisible.value = false
@@ -526,6 +573,37 @@ const sendGroupMessages = async () => {
 //将群聊昵称传入后端
 
 //
+
+
+//输入金额充值
+const inputmoney = ref('')
+
+//退出
+const exitWallet = () => {
+    Walletvisible.value = false
+}
+//确定
+const insureWallet = () => {
+    Walletvisible.value = false
+}
+
+//钱包下拉框选择支付方式
+const paying = ref('')
+const options = [
+
+    //微信支付
+    {
+        value: '微信支付',
+        label: '微信支付',
+
+    },
+
+    //支付宝支付
+    {
+        value: '支付宝支付',
+        label: '支付宝支付'
+    },
+]
 </script>
 
 <style lang="scss" scoped>
