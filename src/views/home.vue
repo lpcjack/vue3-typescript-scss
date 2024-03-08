@@ -381,6 +381,7 @@ const openFilePicker = () => {
         const file = target.files?.[0]; // 使用可选链 (?.) 确保 files 属性存在，并获取第一个文件
         if (file) {
 
+            picUpload(file)
         }
     };
     input.click();
@@ -525,6 +526,31 @@ const sendGroupMessages = async () => {
 //将群聊昵称传入后端
 
 //
+import axios from "axios";
+const picUpload = (f) => {
+    let params = new FormData()
+    //注意在这里一个坑f.file
+    params.append("file", f.file);
+    fetch('http://localhost:8080/upload', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: params
+    })
+        .then(response => {
+            if (response.ok) {
+                // 请求成功
+                console.log('注册成功');
+            } else {
+                // 请求失败
+                console.log('注册失败');
+            }
+        })
+        .catch(error => {
+            console.error('发生错误:', error);
+        })
+}
 </script>
 
 <style lang="scss" scoped>
