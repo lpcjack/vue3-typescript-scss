@@ -380,8 +380,7 @@ const openFilePicker = () => {
         const target = event.target as HTMLInputElement; // 类型断言将 event.target 转换为 HTMLInputElement
         const file = target.files?.[0]; // 使用可选链 (?.) 确保 files 属性存在，并获取第一个文件
         if (file) {
-            userStore.sendImage(file)
-            console.log(imageUrl.value)
+
         }
     };
     input.click();
