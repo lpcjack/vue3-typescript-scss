@@ -201,8 +201,8 @@
                                     <div class="right" v-else>
                                         <!--消息-->
                                         <div class="message">
-<!--                                            {{ message.message }}-->
-                                            <img v-if="userStore.imageUrl1 !== ''" :src="userStore.imageUrl1" alt="Uploaded Image">
+                                            {{ message.message }}
+<!--                                            <img v-if="userStore.imageUrl1 !== ''" :src="userStore.imageUrl1" alt="Uploaded Image">-->
                                             <!--三角形-->
                                             <div class="triangle"></div>
                                         </div>
@@ -238,7 +238,7 @@
 
                                 <!--文件-->
                                 <div class="file">
-                                    <el-icon type="button">
+                                    <el-icon @click="openFilePickerfile">
                                         <FolderOpened/>
                                     </el-icon>
                                 </div>
@@ -410,6 +410,32 @@ const openFilePicker = () => {
         input.click();
     });
 };
+
+//选择文件
+const openFilePickerfile = () => {
+    return new Promise((resolve, reject) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.doc, .docx';
+        input.onchange = async (event) => {
+            const target = event.target;
+            if (target instanceof HTMLInputElement) {
+                const file = target.files?.[0];
+                if (file) {
+                    // 调用 picUpload 函数上传文件
+                    await userStore.picUploadfile(file)
+                    resolve(file);
+                } else {
+                    reject('未选择文件');
+                }
+            } else {
+                reject('无效的目标');
+            }
+        };
+        input.click();
+    });
+};
+
 
 
 //主题颜色切换

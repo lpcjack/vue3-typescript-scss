@@ -5,6 +5,8 @@ export const useUser = defineStore("user", {
     // State 相当于组件中的 data属性
     state: () => ({
 
+        //文件url
+        fileUrl: '',
         //图片url
         imageUrl1: '',
 
@@ -465,6 +467,20 @@ export const useUser = defineStore("user", {
             const data: string = await response.text();
             this.imageUrl1 = data
             console.log(this.imageUrl1)
+        },
+
+        //fetch抓取文件
+        async picUploadfile(f: File){
+            let params = new FormData()
+            params.append("file", f);
+            const response = await fetch('http://localhost:8080/api/uploadfile', {
+                method: 'POST',
+                body: params
+            })
+
+            const data: string = await response.text();
+            this.fileUrl = data
+            console.log(this.fileUrl)
         },
 
     },
