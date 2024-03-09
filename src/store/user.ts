@@ -4,6 +4,11 @@ import {defineStore} from 'pinia'
 export const useUser = defineStore("user", {
     // State 相当于组件中的 data属性
     state: () => ({
+
+        //图片url
+        imageUrl1: '',
+
+
         // 账号昵称
         nickname: '',
 
@@ -445,6 +450,21 @@ export const useUser = defineStore("user", {
                 this.sendImageData(arrayBuffer)
             };
             reader.readAsArrayBuffer(file);
+        },
+
+
+        //fetch抓取图片
+        async picUpload(f: File){
+            let params = new FormData()
+            params.append("file", f);
+            const response = await fetch('http://localhost:8080/api/upload', {
+                method: 'POST',
+                body: params
+            })
+
+            const data: string = await response.text();
+            this.imageUrl1 = data
+            console.log(this.imageUrl1)
         },
 
     },

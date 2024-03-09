@@ -126,6 +126,7 @@
 <!--                                    {{ friend.latestNews }}-->
                                     <div class="latest-notice">
                                         {{ friend.latestNews }}
+                                        <img src="">
                                     </div>
 
                                 </div>
@@ -200,7 +201,8 @@
                                     <div class="right" v-else>
                                         <!--消息-->
                                         <div class="message">
-                                            {{ message.message }}
+<!--                                            {{ message.message }}-->
+                                            <img v-if="userStore.imageUrl1 !== ''" :src="userStore.imageUrl1" alt="Uploaded Image">
                                             <!--三角形-->
                                             <div class="triangle"></div>
                                         </div>
@@ -372,20 +374,42 @@ import {storeToRefs} from 'pinia'
 
 //图片传输
 let imageUrl = ref()
+// const openFilePicker = () => {
+//     const input: HTMLInputElement = document.createElement('input');
+//     input.type = 'file';
+//     input.accept = 'image/*';
+//     input.onchange = (event) => {
+//         const target = event.target as HTMLInputElement; // 类型断言将 event.target 转换为 HTMLInputElement
+//         const file = target.files?.[0]; // 使用可选链 (?.) 确保 files 属性存在，并获取第一个文件
+//         if (file) {
+//
+//             picUpload(file)
+//         }
+//     };
+//     input.click();
+// }
 const openFilePicker = () => {
-    const input: HTMLInputElement = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (event) => {
-        const target = event.target as HTMLInputElement; // 类型断言将 event.target 转换为 HTMLInputElement
-        const file = target.files?.[0]; // 使用可选链 (?.) 确保 files 属性存在，并获取第一个文件
-        if (file) {
-
-            picUpload(file)
-        }
-    };
-    input.click();
-}
+    return new Promise((resolve, reject) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (event) => {
+            const target = event.target;
+            if (target instanceof HTMLInputElement) {
+                const file = target.files?.[0];
+                if (file) {
+                    await userStore.picUpload(file)
+                    resolve(file);
+                } else {
+                    reject('未选择文件');
+                }
+            } else {
+                reject('无效的目标');
+            }
+        };
+        input.click();
+    });
+};
 
 
 //主题颜色切换
@@ -526,21 +550,19 @@ const sendGroupMessages = async () => {
 //将群聊昵称传入后端
 
 //
+const imageUrl1 = ref('')
 const picUpload = async (f) => {
     let params = new FormData()
-    params.append("file", f.file);
+    params.append("file", f);
     const response = await fetch('http://localhost:8080/api/upload', {
         method: 'POST',
         body: params
     })
 
     const data: string = await response.text();
+    imageUrl1.value = data
+    console.log(imageUrl1.value)
 
-    if(data == 'success'){
-        console.log("成功！！！")
-    }else {
-        console.log("失败！！！")
-    }
 }
 
 
