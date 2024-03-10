@@ -270,6 +270,7 @@ export const useUser = defineStore("user", {
                             messages: [
                                 {
                                     type: 'friend', // 消息类型
+                                    sort: 'text',
                                     message: '好友已经上线可以开始聊天了' // 消息内容
                                 }
                             ] as any
@@ -327,6 +328,7 @@ export const useUser = defineStore("user", {
                         messages: [
                             {
                                 type: 'friend', // 消息类型
+                                sort: 'text',
                                 message: '好友已经上线可以开始聊天了' // 消息内容
                             }
                         ] as any
@@ -356,6 +358,7 @@ export const useUser = defineStore("user", {
                         messages: [
                             {
                                 type: 'friend', // 消息类型
+                                sort: 'text',
                                 message: '好友已经上线可以开始聊天了' // 消息内容
                             }
                         ] as any
@@ -481,56 +484,6 @@ export const useUser = defineStore("user", {
             this.friendsInfo.latestNews = receiveMessage
             //返回 true 表示消息发送成功。
             return true
-        },
-
-
-
-
-        //发送图片
-        async sendImageData(imageData: ArrayBuffer) {
-            // 创建发送的 JSON 消息对象
-            let message = {
-                //消息类型
-                type: "image",
-                //发送者
-                sendNickname: this.nickname,
-                //接收者
-                receiveNickname: this.friendsInfo.nickname,
-                //图片base64字符串
-                messages: this.arrayBufferToBase64(imageData) // 将 ArrayBuffer 转换为 Base64 字符串
-            };
-
-            this.webSocketInstance.send(JSON.stringify(message))
-            // 调用发送 JSON 消息的方法
-            // console.log(message)
-            let addMessage = {
-                type: 'my', // 消息类型
-                message: this.arrayBufferToBase64(imageData)  ,// 消息内容
-            }
-            this.friendsInfo.messages.push(addMessage)
-
-            this.friendsInfo.latestNews =  addMessage
-
-            return true
-        },
-
-        // 辅助方法：将 ArrayBuffer 转换为 Base64 字符串
-        arrayBufferToBase64(buffer: ArrayBuffer): string {
-            const bytes = new Uint8Array(buffer);
-            let binary = '';
-            for (let i = 0; i < bytes.byteLength; i++) {
-                binary += String.fromCharCode(bytes[i]);
-            }
-            return btoa(binary);
-        },
-        //文件对象转变成arrayBuffer对象
-        async sendImage(file: File) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const arrayBuffer = reader.result as ArrayBuffer;
-                this.sendImageData(arrayBuffer)
-            };
-            reader.readAsArrayBuffer(file);
         },
 
 

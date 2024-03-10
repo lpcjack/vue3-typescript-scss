@@ -1129,7 +1129,6 @@ console.log(userStore.fileUrl)
                         border-radius: 4px;
                     }
 
-
                 }
                 .upload {
                     position: relative;
