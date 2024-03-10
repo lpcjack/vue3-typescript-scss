@@ -192,7 +192,8 @@
                                         </div>
 
                                         <div class="message">
-                                            {{ message.message }}
+<!--                                            {{ message.message }}-->
+                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 40px; max-height: 30px;">
                                             <!--三角形-->
                                             <div class="triangle"></div>
                                         </div>
@@ -201,8 +202,9 @@
                                     <div class="right" v-else>
                                         <!--消息-->
                                         <div class="message">
-                                            {{ message.message }}
+<!--                                            {{ message.message }}-->
 <!--                                            <img v-if="userStore.imageUrl1 !== ''" :src="userStore.imageUrl1" alt="Uploaded Image">-->
+                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 40px; max-height: 30px;">
                                             <!--三角形-->
                                             <div class="triangle"></div>
                                         </div>
@@ -399,6 +401,7 @@ const openFilePicker = () => {
                 const file = target.files?.[0];
                 if (file) {
                     await userStore.picUpload(file)
+                    await userStore.sendMessagesImage(userStore.imageUrl1)
                     resolve(file);
                 } else {
                     reject('未选择文件');
@@ -576,21 +579,21 @@ const sendGroupMessages = async () => {
 //将群聊昵称传入后端
 
 //
-const imageUrl1 = ref('')
-const picUpload = async (f) => {
-    let params = new FormData()
-    params.append("file", f);
-    const response = await fetch('http://localhost:8080/api/upload', {
-        method: 'POST',
-        body: params
-    })
-
-    const data: string = await response.text();
-    imageUrl1.value = data
-    console.log(imageUrl1.value)
-
-}
-
+// const imageUrl1 = ref('')
+// const picUpload = async (f) => {
+//     let params = new FormData()
+//     params.append("file", f);
+//     const response = await fetch('http://localhost:8080/api/upload', {
+//         method: 'POST',
+//         body: params
+//     })
+//
+//     const data: string = await response.text();
+//     imageUrl1.value = data
+//     console.log(imageUrl1.value)
+//
+// }
+console.log(userStore.fileUrl)
 
 </script>
 
