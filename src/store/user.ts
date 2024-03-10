@@ -60,10 +60,6 @@ export const useUser = defineStore("user", {
                     return
                 }
 
-                //******************************************
-                // this.groupnickname = '打雷'
-
-                //******************************************
 
                 // 设置用户昵称
                 this.nickname = nickname
@@ -109,7 +105,7 @@ export const useUser = defineStore("user", {
                                 //this.friendsInfo.messages 是一个数组，用于存储当前选中好友的所有消息记录。
                                 this.friendsInfo.messages.push({
                                     type: 'friend', // 消息类型
-                                    sort: 'message',//消息具体类型
+                                    sort: 'text',//文本消息
                                     message: data.messages// 消息内容
                                 })
                             }
@@ -120,7 +116,7 @@ export const useUser = defineStore("user", {
                                 this.friendsListInfo[findIndex].latestNews = data.messages
                                 this.friendsListInfo[findIndex].messages.push({
                                     type: 'friend', // 消息类型
-                                    sort: 'message',//消息具体类型
+                                    sort: 'text',//文本消息
                                     message: data.messages// 消息内容
                                 })
                             }
@@ -143,7 +139,7 @@ export const useUser = defineStore("user", {
                                 //this.friendsInfo.messages 是一个数组，用于存储当前选中好友的所有消息记录。
                                 this.friendsInfo.messages.push({
                                     type: 'friend', // 消息类型
-                                    sort: 'image',//消息具体类型
+                                    sort: 'image',//图片类型
                                     message: data.messages// 消息内容
                                 })
                             }
@@ -154,7 +150,7 @@ export const useUser = defineStore("user", {
                                 this.friendsListInfo[findIndex1].latestNews = data.messages
                                 this.friendsListInfo[findIndex1].messages.push({
                                     type: 'friend', // 消息类型
-                                    sort: 'image',//消息具体类型
+                                    sort: 'image',//图片类型
                                     message: data.messages// 消息内容
                                 })
                             }
@@ -279,6 +275,9 @@ export const useUser = defineStore("user", {
                             ] as any
                         }
                         this.friendsListInfo.push(friend)
+
+                        //测试输出
+                        console.log(JSON.stringify(friend))
                     }
                 }
 
@@ -333,6 +332,9 @@ export const useUser = defineStore("user", {
                         ] as any
                     }
                     this.friendsListInfo.push(friend)
+
+                    //测试输出
+                    console.log(JSON.stringify(friend))
                 }
 
                 /*
@@ -360,6 +362,9 @@ export const useUser = defineStore("user", {
                     }
                     //默认选中第一个好友
                     this.friendsInfo = friend
+
+                    //测试输出
+                    console.log(JSON.stringify(friend))
                 }
             }
 
@@ -389,6 +394,7 @@ export const useUser = defineStore("user", {
 
             let addMessage = {
                 type: 'my', // 消息类型
+                sort: 'text',//文本消息
                 message: receiveMessage// 消息内容
             }
             //将新发送的消息添加到当前选择的好友的消息集合中。
@@ -465,6 +471,7 @@ export const useUser = defineStore("user", {
 
             let addMessage = {
                 type: 'my', // 消息类型
+                sort: 'image',
                 message: receiveMessage// 消息内容
             }
             //将新发送的消息添加到当前选择的好友的消息集合中。

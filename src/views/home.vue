@@ -191,23 +191,39 @@
                                             <img src="@/assets/image/theme/login/other.png" alt="">
                                         </div>
 
-                                        <div class="message">
-<!--                                            {{ message.message }}-->
-                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 40px; max-height: 30px;">
+                                        <!--文本消息-->
+                                        <div class="message" v-if="message.sort === 'text'">
+                                            {{ message.message }}
                                             <!--三角形-->
                                             <div class="triangle"></div>
                                         </div>
+
+                                        <!--图片消息-->
+                                        <div class="image-message" v-else>
+                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 120px; max-height: 120px;">
+                                            <!--三角形-->
+                                            <div class="image-triangle"></div>
+                                        </div>
+
                                     </div>
                                     <!--右边-->
                                     <div class="right" v-else>
-                                        <!--消息-->
-                                        <div class="message">
-<!--                                            {{ message.message }}-->
-<!--                                            <img v-if="userStore.imageUrl1 !== ''" :src="userStore.imageUrl1" alt="Uploaded Image">-->
-                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 40px; max-height: 30px;">
+                                        <!--文本消息-->
+                                        <div class="message" v-if="message.sort === 'text'">
+                                            {{ message.message }}
+<!--                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 40px; max-height: 30px;">-->
                                             <!--三角形-->
                                             <div class="triangle"></div>
                                         </div>
+
+                                        <!--图片消息-->
+                                        <div class="image-message" v-else>
+                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 120px; max-height: 120px;">
+                                            <!--三角形-->
+                                            <div class="image-triangle"></div>
+                                        </div>
+
+
                                         <!--头像-->
                                         <div class="avatar">
                                             <img src="@/assets/image/theme/login/avatar.png" alt="">
@@ -374,22 +390,7 @@ const userStore = useUser()
 import {storeToRefs} from 'pinia'
 
 
-//图片传输
-let imageUrl = ref()
-// const openFilePicker = () => {
-//     const input: HTMLInputElement = document.createElement('input');
-//     input.type = 'file';
-//     input.accept = 'image/*';
-//     input.onchange = (event) => {
-//         const target = event.target as HTMLInputElement; // 类型断言将 event.target 转换为 HTMLInputElement
-//         const file = target.files?.[0]; // 使用可选链 (?.) 确保 files 属性存在，并获取第一个文件
-//         if (file) {
-//
-//             picUpload(file)
-//         }
-//     };
-//     input.click();
-// }
+
 const openFilePicker = () => {
     return new Promise((resolve, reject) => {
         const input = document.createElement('input');
@@ -1094,6 +1095,42 @@ console.log(userStore.fileUrl)
 
                     box-shadow: 0 0 12px rgba(0, 0, 0, .12);
                 }
+
+                //图片显示
+                .image-message{
+                    position: relative;
+                    display: flex;
+                    color: #000;
+                    //height: 24px;
+                    padding: 3px 8px;
+                    font-size: 14px;
+                    font-family: "Alimama ShuHeiTi Bold", serif;
+                    border-radius: 4px;
+                    align-items: center;
+                    margin-top: 10px;
+                    margin-left: 8px;
+                    box-shadow: 0 0 12px rgba(0, 0, 0, .12);
+                    background: #ffffff;
+                    // 三角形
+                    .image-triangle {
+                        position: absolute;
+                        left: -6px;
+                        top: 40%;
+                        transform: translateY(-50%);
+                        border-top: 6px solid transparent;
+                        border-right: 8px solid #fff;
+                        border-bottom: 6px solid transparent;
+                    }
+
+                    /* 图片样式 */
+                    img {
+                        max-width: 100%;
+                        height: auto;
+                        border-radius: 4px;
+                    }
+
+
+                }
                 .upload {
                     position: relative;
                     display: flex;
@@ -1205,6 +1242,42 @@ console.log(userStore.fileUrl)
 
                     box-shadow: 0 0 12px rgba(0, 0, 0, .12);
                 }
+
+                //图片显示
+                .image-message {
+                    position: relative;
+                    display: flex;
+                    color: #000;
+                    padding: 3px 8px;
+                    font-size: 14px;
+                    font-family: "Alimama ShuHeiTi Bold", serif;
+                    border-radius: 4px;
+                    align-items: center;
+                    margin-top: 10px;
+                    margin-right: 8px;
+                    box-shadow: 0 0 12px rgba(0, 0, 0, .12);
+                    background: #55D58B; /* 可以将背景颜色移到这里 */
+
+                    /* 三角形 */
+                    .image-triangle {
+                        position: absolute;
+                        right: -6px;
+                        top: 40%;
+                        border-top: 6px solid transparent;
+                        border-left: 8px solid #55D58B;
+                        border-bottom: 6px solid transparent;
+                    }
+
+                    /* 图片样式 */
+                    img {
+                        max-width: 100%; /* 图片最大宽度为父元素宽度 */
+                        height: auto; /* 图片高度自适应 */
+                        border-radius: 4px; /* 如果需要的话，也可以添加圆角 */
+                    }
+                }
+
+
+
 
                 // 头像
                 .avatar {
