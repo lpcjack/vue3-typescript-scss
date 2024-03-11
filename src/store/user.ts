@@ -318,11 +318,11 @@ export const useUser = defineStore("user", {
                             latestNews: '好友已经上线可以开始聊天了', // 最新消息
                             // 消息集合
                             messages: [
-                                {
-                                    type: 'friend', // 消息类型
-                                    sort: 'text',
-                                    message: '好友已经上线可以开始聊天了' // 消息内容
-                                }
+                                // {
+                                //     type: 'friend', // 消息类型
+                                //     sort: 'text',
+                                //     message: '好友已经上线可以开始聊天了' // 消息内容
+                                // }
                             ] as any
                         }
                         this.friendsListInfo.push(friend)
@@ -376,11 +376,11 @@ export const useUser = defineStore("user", {
                         latestNews: '好友已经上线可以开始聊天了', // 最新消息
                         // 消息集合
                         messages: [
-                            {
-                                type: 'friend', // 消息类型
-                                sort: 'text',
-                                message: '好友已经上线可以开始聊天了' // 消息内容
-                            }
+                            // {
+                            //     type: 'friend', // 消息类型
+                            //     sort: 'text',
+                            //     message: '好友已经上线可以开始聊天了' // 消息内容
+                            // }
                         ] as any
                     }
                     this.friendsListInfo.push(friend)
@@ -406,11 +406,11 @@ export const useUser = defineStore("user", {
                         latestNews: '好友已经上线可以开始聊天了', // 最新消息
                         // 消息集合
                         messages: [
-                            {
-                                type: 'friend', // 消息类型
-                                sort: 'text',
-                                message: '好友已经上线可以开始聊天了' // 消息内容
-                            }
+                            // {
+                            //     type: 'friend', // 消息类型
+                            //     sort: 'text',
+                            //     message: '好友已经上线可以开始聊天了' // 消息内容
+                            // }
                         ] as any
                     }
                     //默认选中第一个好友

@@ -92,14 +92,42 @@
                         <div class="navigation" :style="{backgroundColor: savedColornavi}">
                             <!--搜索-->
                             <div class="search">
-                                <el-input @keyup.enter="" v-model="search" placeholder="请输入昵称！！！" :prefix-icon="Search" size="small"/>
+                                <el-input @keyup.enter="searchfriend" v-model="search" placeholder="请输入昵称！！！" :prefix-icon="Search" size="small"/>
                             </div>
-                            <!--添加-->
+
+                            <!--弹出框显示好友信息-->
+                            <el-dialog
+                                :before-close="closeTest"
+                                destroy-on-close
+                                width="50%"
+                                v-model="searchvisible"
+                                align-center
+                                center
+                            >
+                                你们好！！！！
+                            </el-dialog>
+
+
+                            <!--创建群聊-->
                             <div class="add">
-                                <el-icon>
+                                <el-icon @click="creatIt">
                                     <CirclePlusFilled/>
                                 </el-icon>
                             </div>
+
+                            <!--创建群聊界面-->
+                            <el-dialog
+                                destroy-on-close
+                                :before-close="closeTest"
+                                v-model="creatGroup"
+                                width="50%"
+                                align-center
+                                center
+                            >
+                                大家好！！！！
+                            </el-dialog>
+
+
                         </div>
                         <!--好友列表无限滚动-->
                         <div class="infinite-scroll" style="overflow: auto" v-infinite-scroll="loadInfiniteScroll">
@@ -200,7 +228,7 @@
 
                                         <!--图片消息-->
                                         <div class="image-message" v-else-if="message.sort === 'image'">
-                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 120px; max-height: 120px;" @click="openleftDialog(message.message)">
+                                            <img  v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 120px; max-height: 120px;" @click="openleftDialog(message.message)">
                                             <!--三角形-->
                                             <div class="image-triangle"></div>
                                         </div>
@@ -228,21 +256,7 @@
                                         </div>
 
 
-
                                         <!--预览图片-->
-                                        <el-dialog
-                                            destroy-on-close
-                                            v-model="dialogVisibleImageleft"
-                                            title="图片预览"
-                                            width="50%" autocapitalize="on"
-                                            align-center
-                                            center
-                                        >
-                                            <el-image style="width: auto; height: auto"
-                                                      :src="imagDialogleft" :fit="'cover'"
-                                            />
-                                        </el-dialog>
-
 
                                     </div>
                                     <!--右边-->
@@ -285,28 +299,42 @@
                                             <div class="file-triangle"></div>
                                         </div>
 
-                                        <!--预览图片-->
-                                        <el-dialog
-                                            destroy-on-close
-                                            v-model="dialogVisibleImage"
-                                            title="图片预览"
-                                            width="50%"
-                                            align-center
-                                            center
-                                        >
-                                            <el-image style="width: auto; height: auto"
-                                                      :src="imgDialog" :fit="'cover'"
-                                            />
-                                        </el-dialog>
-
-
-
                                         <!--头像-->
                                         <div class="avatar">
                                             <img src="@/assets/image/theme/login/avatar.png" alt="">
                                         </div>
                                     </div>
                                 </div>
+
+                                <!--左侧图片预览-->
+                                <el-dialog
+                                    :before-close="closeTest"
+                                    destroy-on-close
+                                    v-model="dialogVisibleImageleft"
+                                    title="图片预览"
+                                    width="50%"
+                                    align-center
+                                    center
+                                >
+                                    <el-image style="width: auto; height: auto"
+                                              :src="imagDialogleft" :fit="'cover'"
+                                    />
+                                </el-dialog>
+
+                                <!--右侧预览图片-->
+                                <el-dialog
+                                    :before-close="closeTest"
+                                    destroy-on-close
+                                    v-model="dialogVisibleImage"
+                                    title="图片预览"
+                                    width="50%"
+                                    align-center
+                                    center
+                                >
+                                    <el-image style="width: auto; height: auto"
+                                              :src="imgDialog" :fit="'cover'"
+                                    />
+                                </el-dialog>
                             </div>
                         </div>
 
@@ -749,11 +777,30 @@ const openDialog = (url: string) => {
 //左侧对方预览图片
 const imagDialogleft = ref('')
 const dialogVisibleImageleft = ref(false)
+const i = ref(0)
 const openleftDialog = (url: string) =>{
     dialogVisibleImageleft.value = !dialogVisibleImageleft.value
     imagDialogleft.value = url
 }
 
+const  closeTest = (done) => {
+    console.log(i.value++)
+    done();
+}
+
+
+//搜索框显示个人信息
+const searchvisible = ref(false)
+const searchfriend = () => {
+    searchvisible.value = !searchvisible.value
+}
+
+//创建群聊
+const creatGroup = ref(false)
+
+const creatIt = () => {
+    creatGroup.value = !creatGroup.value
+}
 </script>
 
 <style lang="scss" scoped>
