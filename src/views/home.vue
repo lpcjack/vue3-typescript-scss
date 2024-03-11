@@ -123,8 +123,24 @@
                                 width="50%"
                                 align-center
                                 center
+                                :show-close="true"
                             >
-                                大家好！！！！
+                                <el-input
+                                    placeholder="请输入群名！！"
+                                    v-model="inputGroupName"
+                                    clearable>
+                                </el-input>
+                                <div class="select-friends" style="overflow: auto" v-infinite-scroll="loadInfiniteScroll">
+                                    <!--头像-->
+                                    <div class="avatar">
+                                        <img src="@/assets/image/theme/login/other.png" alt="">
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <el-button type="success" @click="exitgroup">退出</el-button>
+                                    <el-button type="success">创建</el-button>
+                                </div>
                             </el-dialog>
 
 
@@ -800,6 +816,15 @@ const creatGroup = ref(false)
 
 const creatIt = () => {
     creatGroup.value = !creatGroup.value
+}
+
+
+
+//创建群聊
+const inputGroupName = ref('')
+//退出界面
+const exitgroup = () => {
+    creatGroup.value = false
 }
 </script>
 
