@@ -224,6 +224,23 @@ export const useUser = defineStore("user", {
                         }else {
                             console.log("抱歉，没有该群聊！！！！！")
                         }
+                    }else if (data.type === 'group-image'){
+                        //寻找群聊
+                        let findIndex1 = this.groupListInfo.findIndex((object: any) => object.groupnickname === '打雷');
+
+                        //如果找到了该群聊，则进入该模块
+                        if (findIndex1 !== -1) {
+
+                            this.groupListInfo[findIndex1].latestNews = data.messages
+                            this.groupListInfo[findIndex1].messages.push({
+                                type: 'group-friend',
+                                sort: 'image',
+                                groupmessage: data.messages,
+                            })
+
+                        }else {
+                            console.log("抱歉，没有该群聊！！！！！")
+                        }
                     }
                     else if(data.type === 'createGroup'){
                         let group = {} as any;
@@ -273,11 +290,13 @@ export const useUser = defineStore("user", {
                     messages : [
                         {
                             type: 'group-friend' ,
+                            sort: 'text',
                             groupmessage: data.messages[i].nickname + '已经上线，我们可以聊天了！！！' ,
                         }
                     ] as any
                 }
                 this.currentGroupInfo = group;
+
             }
 
         },
@@ -467,6 +486,7 @@ export const useUser = defineStore("user", {
 
             let addgroupMessage = {
                 type: 'group-my',
+                sort: 'text',
                 groupmessage: receiveMessage
             };
 
@@ -580,6 +600,65 @@ export const useUser = defineStore("user", {
             this.friendsInfo.latestNews = receiveMessage
             //返回 true 表示消息发送成功。
             return true
+        },
+
+
+        //群发图片
+        async sendGroupImage(receiveMessage: string) {
+            if (!this.currentGroupInfo.groupnickname) {
+                console.log("这里没有群聊");
+                return false;
+            }
+
+            let groupImage = {
+                type: "group-image",
+                sendNickname: this.nickname,
+                messages: receiveMessage // 省略 receiveNickname 字段
+            };
+            this.webSocketInstance.send(JSON.stringify(groupImage))
+
+            let addgroupMessage = {
+                type: 'group-my',
+                sort: 'image',
+                groupmessage: receiveMessage
+            };
+
+            // 将新发送的消息添加到当前选择的群聊的消息集合中
+            this.currentGroupInfo.messages.push(addgroupMessage);
+
+            // console.log(JSON.stringify(this.currentGroupInfo))
+            // 更新当前选择群聊的最新消息为刚发送的消息内容
+            this.currentGroupInfo.latestNews = receiveMessage;
+            return true;
+        },
+
+
+        //发送文件
+        async sendGroupFile(receiveMessage: string) {
+            if (!this.currentGroupInfo.groupnickname) {
+                console.log("这里没有群聊");
+                return false;
+            }
+
+            let groupFilemessage = {
+                type: "group-file",
+                sendNickname: this.nickname,
+                messages: receiveMessage // 省略 receiveNickname 字段
+            };
+            this.webSocketInstance.send(JSON.stringify(groupFilemessage))
+
+            let addgroupMessage = {
+                type: 'group-my',
+                sort: 'file',
+                groupmessage: receiveMessage
+            };
+
+            // 将新发送的消息添加到当前选择的群聊的消息集合中
+            this.currentGroupInfo.messages.push(addgroupMessage);
+            // console.log(JSON.stringify(this.currentGroupInfo))
+            // 更新当前选择群聊的最新消息为刚发送的消息内容
+            this.currentGroupInfo.latestNews = receiveMessage;
+            return true;
         },
 
     },

@@ -259,22 +259,6 @@
                                         <div class="image-message" v-else-if="message.sort === 'image'">
                                             <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 120px; max-height: 120px;" @click="openDialog(message.message)">
 
-                                            <!--预览图片-->
-                                            <el-dialog
-                                                destroy-on-close
-                                                v-model="dialogVisibleImage"
-                                                title="图片预览"
-                                                width="50%"
-                                                align-center
-                                                center
-                                            >
-                                                <el-image style="width: auto; height: auto"
-                                                          :src="imgDialog" :fit="'cover'"
-                                                          />
-                                            </el-dialog>
-
-
-
                                             <!--三角形-->
                                             <div class="image-triangle"></div>
                                         </div>
@@ -300,6 +284,20 @@
                                             <!--三角形-->
                                             <div class="file-triangle"></div>
                                         </div>
+
+                                        <!--预览图片-->
+                                        <el-dialog
+                                            destroy-on-close
+                                            v-model="dialogVisibleImage"
+                                            title="图片预览"
+                                            width="50%"
+                                            align-center
+                                            center
+                                        >
+                                            <el-image style="width: auto; height: auto"
+                                                      :src="imgDialog" :fit="'cover'"
+                                            />
+                                        </el-dialog>
 
 
 
@@ -421,6 +419,12 @@
                                     </el-form-item>
                                 </el-form>
 
+                                <div class="picture">
+                                    <el-icon @click="opengroupFilePicker">
+                                        <Picture />
+                                    </el-icon>
+                                </div>
+
                                 <!--文件-->
                                 <div class="file">
                                     <el-icon>
@@ -470,6 +474,7 @@ import {storeToRefs} from 'pinia'
 
 
 
+//单人聊天选择图片
 const openFilePicker = () => {
     return new Promise((resolve, reject) => {
         const input = document.createElement('input');
@@ -494,7 +499,7 @@ const openFilePicker = () => {
     });
 };
 
-//选择文件
+//单人聊天选择文件
 const openFilePickerfile = () => {
     return new Promise((resolve, reject) => {
         const input = document.createElement('input');
@@ -521,6 +526,54 @@ const openFilePickerfile = () => {
 };
 
 
+//单人聊天选择图片
+const opengroupFilePicker = () => {
+    return new Promise((resolve, reject) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (event) => {
+            const target = event.target;
+            if (target instanceof HTMLInputElement) {
+                const file = target.files?.[0];
+                if (file) {
+                    await userStore.picUpload(file)
+                    resolve(file);
+                } else {
+                    reject('未选择文件');
+                }
+            } else {
+                reject('无效的目标');
+            }
+        };
+        input.click();
+    });
+};
+
+//单人聊天选择文件
+const opengroupFilePickerfile = () => {
+    return new Promise((resolve, reject) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.doc, .docx, .md, .rar, .zip';
+        input.onchange = async (event) => {
+            const target = event.target;
+            if (target instanceof HTMLInputElement) {
+                const file = target.files?.[0];
+                if (file) {
+                    // 调用 picUpload 函数上传文件
+                    await userStore.picUploadfile(file)
+                    resolve(file);
+                } else {
+                    reject('未选择文件');
+                }
+            } else {
+                reject('无效的目标');
+            }
+        };
+        input.click();
+    });
+};
 
 //主题颜色切换
 
