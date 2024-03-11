@@ -156,6 +156,37 @@ export const useUser = defineStore("user", {
                             }
 
                         }
+                    }else if(data.type === 'file'){
+                        //寻找发送消息在好友列表中的索引
+                        let findIndex2 = this.friendsListInfo.findIndex((object: any) => object.nickname === data.sendNickname);
+
+                        //如果找到了该好友，则进入该模块
+                        if (findIndex2 !== -1) {
+                            //this.friendsListInfo[findIndex].nickname表示找到的好友在好友列表中的昵称
+                            //this.friendsInfo.nickname当前选中好友的昵称
+                            if (this.friendsListInfo[findIndex2].nickname === this.friendsInfo.nickname){
+                                this.friendsInfo.latestNews = data.messages
+                                //将接收到的消息内容 data.messages 添加到当前选中好友的消息记录中，用于保存整个聊天的消息历史。
+                                //this.friendsInfo.messages 是一个数组，用于存储当前选中好友的所有消息记录。
+                                this.friendsInfo.messages.push({
+                                    type: 'friend', // 消息类型
+                                    sort: 'file',//图片类型
+                                    message: data.messages// 消息内容
+                                })
+                            }
+
+                            //不是选中的好友
+
+                            else {
+                                this.friendsListInfo[findIndex2].latestNews = data.messages
+                                this.friendsListInfo[findIndex2].messages.push({
+                                    type: 'friend', // 消息类型
+                                    sort: 'file',//图片类型
+                                    message: data.messages// 消息内容
+                                })
+                            }
+
+                        }
                     }
 
                     //群聊消息
@@ -513,6 +544,42 @@ export const useUser = defineStore("user", {
             const data: string = await response.text();
             this.fileUrl = data
             console.log(this.fileUrl)
+        },
+
+        async sendMessagesFile(receiveMessage: string) {
+            //确定存在此人
+            if (!this.friendsInfo.nickname) {
+                return false
+            }
+            /*
+            创建一个 message 对象，包含了消息的类型（"messages"）、发送者昵称、接收者昵称以及消息内容
+             */
+            let Filemessage = {
+
+                type: "file",
+                //发送者昵称
+                sendNickname: this.nickname,
+                //接收者的昵称
+                receiveNickname: this.friendsInfo.nickname,
+                //消息内容
+                messages: receiveMessage
+            }
+            //通过 WebSocket 实例向服务器发送消息。
+            this.webSocketInstance.send(JSON.stringify(Filemessage))
+            console.log(Filemessage)
+
+            let addMessage = {
+                type: 'my', // 消息类型
+                sort: 'file',
+                message: receiveMessage// 消息内容
+            }
+            //将新发送的消息添加到当前选择的好友的消息集合中。
+            this.friendsInfo.messages.push(addMessage)
+            console.log(JSON.stringify(this.friendsInfo))
+            //更新当前选择的好友的最新消息为刚发送的消息内容。
+            this.friendsInfo.latestNews = receiveMessage
+            //返回 true 表示消息发送成功。
+            return true
         },
 
     },

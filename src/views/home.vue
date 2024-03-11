@@ -205,6 +205,29 @@
                                             <div class="image-triangle"></div>
                                         </div>
 
+                                        <!--文件类型-->
+                                        <div class="upload" v-else>
+                                            <div class="load-top">
+                                                <div class="photo">
+                                                    <img src="@/assets/image/theme/home/svg/img.png" alt="">
+                                                </div>
+                                                <div class="top-right">
+                                                    <div class="docname">实验五.pdf</div>
+                                                    <!--大小-->
+                                                    <div class="size">23.5KB</div>
+                                                </div>
+                                            </div>
+                                            <div class="line"></div>
+                                            <div class="load-bottom">
+                                                <div class="open">打开</div>
+                                                <div class="copy">复制</div>
+                                                <div class="dload">下载</div>
+                                            </div>
+                                            <!--三角形-->
+                                            <div class="file-triangle"></div>
+                                        </div>
+
+
                                     </div>
                                     <!--右边-->
                                     <div class="right" v-else>
@@ -217,11 +240,34 @@
                                         </div>
 
                                         <!--图片消息-->
-                                        <div class="image-message" v-else>
+                                        <div class="image-message" v-else-if="message.sort === 'image'">
                                             <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 120px; max-height: 120px;">
                                             <!--三角形-->
                                             <div class="image-triangle"></div>
                                         </div>
+
+                                        <!--文件类型-->
+                                        <div class="upload" v-else>
+                                            <div class="load-top">
+                                                <div class="photo">
+                                                    <img src="@/assets/image/theme/home/svg/img.png" alt="">
+                                                </div>
+                                                <div class="top-right">
+                                                    <div class="docname">实验五.pdf</div>
+                                                    <!--大小-->
+                                                    <div class="size">23.5KB</div>
+                                                </div>
+                                            </div>
+                                            <div class="line"></div>
+                                            <div class="load-bottom">
+                                                <div class="open">打开</div>
+                                                <div class="copy">复制</div>
+                                                <div class="dload">下载</div>
+                                            </div>
+                                            <!--三角形-->
+                                            <div class="file-triangle"></div>
+                                        </div>
+
 
 
                                         <!--头像-->
@@ -428,6 +474,7 @@ const openFilePickerfile = () => {
                 if (file) {
                     // 调用 picUpload 函数上传文件
                     await userStore.picUploadfile(file)
+                    await userStore.sendMessagesFile(userStore.fileUrl)
                     resolve(file);
                 } else {
                     reject('未选择文件');
@@ -1145,7 +1192,7 @@ console.log(userStore.fileUrl)
                     margin-left: 8px;
                     margin-right: 0px;
                     // 三角形
-                    .triangle {
+                    .file-triangle {
                         position: absolute;
                         left: -6px;
                         top: 40px;
@@ -1289,6 +1336,78 @@ console.log(userStore.fileUrl)
                         width: 100%;
                         height: 100%;
                         border-radius: 50%;
+                    }
+                }
+                .upload {
+                    position: relative;
+                    display: flex;
+                    color: #000;
+                    height: 100px;
+                    padding: 5px 100px;
+                    font-size: 14px;
+                    background: #ffffff;
+                    font-family: "Alimama ShuHeiTi Bold", serif;
+                    border-radius: 8px;
+                    //align-items: center;
+                    margin-top: 10px;
+                    margin-left: 8px;
+                    margin-right: 0px;
+                    // 三角形
+                    .file-triangle {
+                        position: absolute;
+                        right: -6px;
+                        top: 40px;
+                        border-top: 6px solid transparent;
+                        border-left: 8px solid #fff;
+                        border-bottom: 6px solid transparent;
+                    }
+
+                    box-shadow: 0 0 12px rgba(0, 0, 0, .12);
+                    .load-top{
+                        position: absolute;  /* 相对于父容器定位 */
+                        display: flex;
+                        margin-top: 10px;
+                        align-items: center;
+                        justify-content: space-between;
+                        left: 10px;
+
+                        .photo{
+                            margin-left: 10px;
+                            justify-items: center;
+                        }
+                        .top-right{
+                            margin-left: 15px;
+                            font-size: 12px;
+
+                        }
+
+
+
+                    }
+                    .line{
+                        border-bottom: 1px solid #3A434A;
+                    }
+                    .load-bottom{
+                        position: absolute;
+                        display: flex;
+                        width: 60%;
+                        bottom: 10px;
+                        left: 45px;
+                        font-size: 13px;
+                        align-items: center;
+                        justify-content: space-between;
+                    }
+                    .open:hover{
+                        cursor: pointer;
+                        color: #ECEFFF;
+                    }
+                    .copy:hover{
+                        cursor: pointer;
+                        color: #ECEFFF;
+                    }
+                    .dload:hover{
+                        cursor: pointer;
+                        color: #ECEFFF;
                     }
                 }
             }
