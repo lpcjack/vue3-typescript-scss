@@ -12,3 +12,4 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 elementApp.use(pinia)
 elementApp.use(router)
 elementApp.mount('#app')
+

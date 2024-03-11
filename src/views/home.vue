@@ -199,8 +199,8 @@
                                         </div>
 
                                         <!--图片消息-->
-                                        <div class="image-message" v-else>
-                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 120px; max-height: 120px;">
+                                        <div class="image-message" v-else-if="message.sort === 'image'">
+                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 120px; max-height: 120px;" @click="openleftDialog(message.message)">
                                             <!--三角形-->
                                             <div class="image-triangle"></div>
                                         </div>
@@ -221,11 +221,27 @@
                                             <div class="load-bottom">
                                                 <div class="open">打开</div>
                                                 <div class="copy">复制</div>
-                                                <div class="dload">下载</div>
+                                                <el-link class="dload" @click="download(message.message)">下载</el-link>
                                             </div>
                                             <!--三角形-->
                                             <div class="file-triangle"></div>
                                         </div>
+
+
+
+                                        <!--预览图片-->
+                                        <el-dialog
+                                            destroy-on-close
+                                            v-model="dialogVisibleImageleft"
+                                            title="图片预览"
+                                            width="50%" autocapitalize="on"
+                                            align-center
+                                            center
+                                        >
+                                            <el-image style="width: auto; height: auto"
+                                                      :src="imagDialogleft" :fit="'cover'"
+                                            />
+                                        </el-dialog>
 
 
                                     </div>
@@ -241,7 +257,24 @@
 
                                         <!--图片消息-->
                                         <div class="image-message" v-else-if="message.sort === 'image'">
-                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 120px; max-height: 120px;">
+                                            <img v-if="message.message !== ''" :src="message.message" alt="Uploaded Image" style="max-width: 120px; max-height: 120px;" @click="openDialog(message.message)">
+
+                                            <!--预览图片-->
+                                            <el-dialog
+                                                destroy-on-close
+                                                v-model="dialogVisibleImage"
+                                                title="图片预览"
+                                                width="50%"
+                                                align-center
+                                                center
+                                            >
+                                                <el-image style="width: auto; height: auto"
+                                                          :src="imgDialog" :fit="'cover'"
+                                                          />
+                                            </el-dialog>
+
+
+
                                             <!--三角形-->
                                             <div class="image-triangle"></div>
                                         </div>
@@ -262,7 +295,7 @@
                                             <div class="load-bottom">
                                                 <div class="open">打开</div>
                                                 <div class="copy">复制</div>
-                                                <div class="dload">下载</div>
+                                                <el-link class="dload" @click="download(message.message)">下载</el-link>
                                             </div>
                                             <!--三角形-->
                                             <div class="file-triangle"></div>
@@ -590,6 +623,7 @@ const loadInfiniteScroll = () => {
 
 //*****************
 import {storemessage} from "../store/storemessage.ts";
+import router from "../router";
 const store = storemessage()
 //****************
 //调用user.ts里边的sendMessage方法，私聊发送
@@ -642,6 +676,30 @@ const sendGroupMessages = async () => {
 //
 // }
 console.log(userStore.fileUrl)
+
+
+//点击下载,下载文件
+const download = (url: string) => {
+    window.location.href = url
+}
+
+//点击图片打开预览
+const imgDialog = ref('')
+//控制对话框弹出
+const dialogVisibleImage = ref(false)
+const openDialog = (url: string) => {
+    dialogVisibleImage.value = !dialogVisibleImage.value //打开弹框
+    imgDialog.value = url; //点击时拿到的图片地址
+}
+
+
+//左侧对方预览图片
+const imagDialogleft = ref('')
+const dialogVisibleImageleft = ref(false)
+const openleftDialog = (url: string) =>{
+    dialogVisibleImageleft.value = !dialogVisibleImageleft.value
+    imagDialogleft.value = url
+}
 
 </script>
 
