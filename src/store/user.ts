@@ -224,24 +224,25 @@ export const useUser = defineStore("user", {
                         }else {
                             console.log("抱歉，没有该群聊！！！！！")
                         }
-                    }else if (data.type === 'group-image'){
-                        //寻找群聊
-                        let findIndex1 = this.groupListInfo.findIndex((object: any) => object.groupnickname === '打雷');
-
-                        //如果找到了该群聊，则进入该模块
-                        if (findIndex1 !== -1) {
-
-                            this.groupListInfo[findIndex1].latestNews = data.messages
-                            this.groupListInfo[findIndex1].messages.push({
-                                type: 'group-friend',
-                                sort: 'image',
-                                groupmessage: data.messages,
-                            })
-
-                        }else {
-                            console.log("抱歉，没有该群聊！！！！！")
-                        }
                     }
+                    // else if (data.type === 'group-image'){
+                    //     //寻找群聊
+                    //     let findIndex1 = this.groupListInfo.findIndex((object: any) => object.groupnickname === '打雷');
+                    //
+                    //     //如果找到了该群聊，则进入该模块
+                    //     if (findIndex1 !== -1) {
+                    //
+                    //         this.groupListInfo[findIndex1].latestNews = data.messages
+                    //         this.groupListInfo[findIndex1].messages.push({
+                    //             type: 'group-friend',
+                    //             sort: 'image',
+                    //             groupmessage: data.messages,
+                    //         })
+                    //
+                    //     }else {
+                    //         console.log("抱歉，没有该群聊！！！！！")
+                    //     }
+                    // }
                     else if(data.type === 'createGroup'){
                         let group = {} as any;
                         group = {

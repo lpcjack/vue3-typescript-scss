@@ -115,36 +115,65 @@
                                 </el-icon>
                             </div>
 
-                            <!--创建群聊界面-->
-                            <el-dialog
-                                destroy-on-close
-                                :before-close="closeTest"
-                                v-model="creatGroup"
-                                width="50%"
-                                align-center
-                                center
-                                :show-close="true"
-                            >
-                                <el-input
-                                    placeholder="请输入群名！！"
-                                    v-model="inputGroupName"
-                                    clearable>
-                                </el-input>
-                                <div class="select-friends" style="overflow: auto" v-infinite-scroll="loadInfiniteScroll">
+
+                        </div>
+
+<!--                        **************-->
+                        <!--创建群聊界面-->
+                        <el-dialog
+                            destroy-on-close
+                            :before-close="closeTest"
+                            v-model="creatGroup"
+                            width="50%"
+                            align-center
+                            center
+                            :show-close="true"
+                            title="创建群聊"
+
+                        >
+                            <div class="information">
+                                <el-form-item label="群名：" style="font-size: 20px">
+                                    <el-input
+                                        placeholder="请输入群名！！"
+                                        v-model="inputGroupName"
+                                        clearable>
+                                    </el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="createGroup" style="overflow: auto" v-infinite-scroll="loadInfiniteScroll" >
+                                <div class="friends" v-for="(friend,index) in friendsListInfo" :key="index" >
                                     <!--头像-->
-                                    <div class="avatar">
+                                    <div class="friend-avatar">
                                         <img src="@/assets/image/theme/login/other.png" alt="">
                                     </div>
 
-                                </div>
-                                <div>
-                                    <el-button type="success" @click="exitgroup">退出</el-button>
-                                    <el-button type="success">创建</el-button>
-                                </div>
-                            </el-dialog>
+                                    <!--好友消息-->
+                                    <div class="friend-message">
+                                        <!--昵称-->
+                                        <div class="friend-nickname">
 
+                                            <div>{{ friend.nickname }}</div>
+                                            <div class="friend-badge">
+                                                {{ friend.messages.length }}
+                                            </div>
+                                        </div>
+                                        <!--最新通知-->
+                                        <div class="friend-latest-notice">
+                                            {{ friend.latestNews }}
+                                            <img src="">
+                                        </div>
 
-                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="operate">
+                                <el-button type="success" @click="exitgroup">退出</el-button>
+                                <el-button type="success">创建</el-button>
+                            </div>
+                        </el-dialog>
+<!--                        ****************-->
                         <!--好友列表无限滚动-->
                         <div class="infinite-scroll" style="overflow: auto" v-infinite-scroll="loadInfiniteScroll">
                             <!--好友-->
@@ -829,6 +858,152 @@ const exitgroup = () => {
 </script>
 
 <style lang="scss" scoped>
+
+.createGroup {
+    width: 100%;
+    height: 530px;
+    //border: 1px solid red;
+    // 好友
+    .friends {
+        display: flex;
+        height: 60px;
+        cursor: pointer;
+        align-items: center;
+        justify-content: space-evenly;
+        // 头像
+        .friend-avatar {
+            width: 38px;
+            height: 38px;
+
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+            }
+        }
+
+        // 好友消息
+        .friend-message {
+            display: flex;
+            width: 210px;
+            text-align: left;
+            flex-direction: column;
+            // 昵称
+            .friend-nickname {
+                display: flex;
+                color: #fff;
+                font-size: 12px;
+                font-family: "Alimama DongFangDaKai", serif;
+                justify-content: space-between;
+
+                .friend-badge {
+                    display: flex;
+                    color: #ffffff;
+                    width: 18px;
+                    height: 18px;
+                    font-size: 10px;
+                    font-family: "Alimama ShuHeiTi Bold", serif;
+                    background: red;
+                    border-radius: 50%;
+                    text-align: center;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+
+            // 最新通知
+            .friend-latest-notice {
+                width: 210px;
+                color: #C0C4CC;
+                font-size: 9px;
+                font-family: "Alimama DongFangDaKai", serif;
+                text-overflow: ellipsis; /* ellipsis:显示省略符号来代表被修剪的文本  string:使用给定的字符串来代表被修剪的文本*/
+                white-space: nowrap; /* nowrap:规定段落中的文本不进行换行   */
+                overflow: hidden; /*超出部分隐藏*/
+            }
+        }
+    }
+    //*************************
+    .group {
+        display: flex;
+        height: 60px;
+        cursor: pointer;
+        align-items: center;
+        justify-content: space-evenly;
+        // 头像
+        .group-avatar {
+            width: 38px;
+            height: 38px;
+
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+            }
+        }
+
+        // 好友消息
+        .group-message {
+            display: flex;
+            width: 210px;
+            text-align: left;
+            flex-direction: column;
+            // 昵称
+            .group-nickname {
+                display: flex;
+                color: #fff;
+                font-size: 12px;
+                font-family: "Alimama DongFangDaKai", serif;
+                justify-content: space-between;
+
+                .group-badge {
+                    display: flex;
+                    color: #ffffff;
+                    width: 18px;
+                    height: 18px;
+                    font-size: 10px;
+                    font-family: "Alimama ShuHeiTi Bold", serif;
+                    background: red;
+                    border-radius: 50%;
+                    text-align: center;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+
+            // 最新通知
+            .group-latest-notice {
+                width: 210px;
+                color: #C0C4CC;
+                font-size: 9px;
+                font-family: "Alimama DongFangDaKai", serif;
+                text-overflow: ellipsis; /* ellipsis:显示省略符号来代表被修剪的文本  string:使用给定的字符串来代表被修剪的文本*/
+                white-space: nowrap; /* nowrap:规定段落中的文本不进行换行   */
+                overflow: hidden; /*超出部分隐藏*/
+            }
+        }
+    }
+    //*************************
+
+    // 好友鼠标悬浮
+    .friend:hover {
+        background: #444C56;
+    }
+
+    //群聊列表悬浮
+    .group:hover{
+        background: #444C56;
+    }
+}
+
+.information{
+    display: flex;
+    width: 60%;
+    height: 40px;
+    align-items: center;
+    margin-bottom: 10px;
+    justify-content: space-evenly;
+}
 
 //选择
 .option-color{
