@@ -141,7 +141,7 @@
                                 </el-form-item>
                             </div>
                             <div class="createGroup" style="overflow: auto" v-infinite-scroll="loadInfiniteScroll" >
-                                <div class="friends" v-for="(friend,index) in friendsListInfo" :key="index" >
+                                <div class="find-friends" v-for="(friend,index) in friendsListInfo" :key="index" >
                                     <!--头像-->
                                     <div class="friend-avatar">
                                         <img src="@/assets/image/theme/login/other.png" alt="">
@@ -152,7 +152,7 @@
                                         <!--昵称-->
                                         <div class="friend-nickname">
 
-                                            <div>{{ friend.nickname }}</div>
+                                            <div class="nickname">{{ friend.nickname }}</div>
                                             <div class="friend-badge">
                                                 {{ friend.messages.length }}
                                             </div>
@@ -859,12 +859,14 @@ const exitgroup = () => {
 
 <style lang="scss" scoped>
 
+
 .createGroup {
     width: 100%;
     height: 530px;
     //border: 1px solid red;
     // 好友
-    .friends {
+    .find-friends {
+        background: #ECEFFF;
         display: flex;
         height: 60px;
         cursor: pointer;
@@ -891,7 +893,7 @@ const exitgroup = () => {
             // 昵称
             .friend-nickname {
                 display: flex;
-                color: #fff;
+                color: #000000;
                 font-size: 12px;
                 font-family: "Alimama DongFangDaKai", serif;
                 justify-content: space-between;
@@ -914,86 +916,22 @@ const exitgroup = () => {
             // 最新通知
             .friend-latest-notice {
                 width: 210px;
-                color: #C0C4CC;
-                font-size: 9px;
-                font-family: "Alimama DongFangDaKai", serif;
-                text-overflow: ellipsis; /* ellipsis:显示省略符号来代表被修剪的文本  string:使用给定的字符串来代表被修剪的文本*/
-                white-space: nowrap; /* nowrap:规定段落中的文本不进行换行   */
-                overflow: hidden; /*超出部分隐藏*/
-            }
-        }
-    }
-    //*************************
-    .group {
-        display: flex;
-        height: 60px;
-        cursor: pointer;
-        align-items: center;
-        justify-content: space-evenly;
-        // 头像
-        .group-avatar {
-            width: 38px;
-            height: 38px;
-
-            img {
-                width: 100%;
-                height: 100%;
-                border-radius: 50%;
-            }
-        }
-
-        // 好友消息
-        .group-message {
-            display: flex;
-            width: 210px;
-            text-align: left;
-            flex-direction: column;
-            // 昵称
-            .group-nickname {
-                display: flex;
-                color: #fff;
+                color: #000000;
+                font-weight: bold;
                 font-size: 12px;
                 font-family: "Alimama DongFangDaKai", serif;
-                justify-content: space-between;
-
-                .group-badge {
-                    display: flex;
-                    color: #ffffff;
-                    width: 18px;
-                    height: 18px;
-                    font-size: 10px;
-                    font-family: "Alimama ShuHeiTi Bold", serif;
-                    background: red;
-                    border-radius: 50%;
-                    text-align: center;
-                    align-items: center;
-                    justify-content: center;
-                }
-            }
-
-            // 最新通知
-            .group-latest-notice {
-                width: 210px;
-                color: #C0C4CC;
-                font-size: 9px;
-                font-family: "Alimama DongFangDaKai", serif;
                 text-overflow: ellipsis; /* ellipsis:显示省略符号来代表被修剪的文本  string:使用给定的字符串来代表被修剪的文本*/
                 white-space: nowrap; /* nowrap:规定段落中的文本不进行换行   */
                 overflow: hidden; /*超出部分隐藏*/
             }
         }
     }
-    //*************************
 
     // 好友鼠标悬浮
-    .friend:hover {
-        background: #444C56;
+    .find-friends:hover {
+        background: #A6B6C3;
     }
 
-    //群聊列表悬浮
-    .group:hover{
-        background: #444C56;
-    }
 }
 
 .information{
