@@ -139,6 +139,15 @@
                                         clearable>
                                     </el-input>
                                 </el-form-item>
+
+                                <!--全选好友-->
+                                <el-checkbox
+                                    v-model="checkAll"
+                                    @change="handleCheckAllChange"
+                                    class="check-all"
+                                >
+                                    全选
+                                </el-checkbox>
                             </div>
                             <div class="createGroup" style="overflow: auto" v-infinite-scroll="loadInfiniteScroll" >
                                 <div class="find-friends" v-for="(friend,index) in friendsListInfo" :key="index" >
@@ -152,15 +161,22 @@
                                         <!--昵称-->
                                         <div class="friend-nickname">
 
-                                            <div class="nickname">{{ friend.nickname }}</div>
-                                            <div class="friend-badge">
-                                                {{ friend.messages.length }}
-                                            </div>
+                                            <div class="nickname">昵称： {{ friend.nickname }}</div>
+
                                         </div>
                                         <!--最新通知-->
                                         <div class="friend-latest-notice">
-                                            {{ friend.latestNews }}
+                                            大家好！我是{{friend.nickname}}
                                             <img src="">
+                                        </div>
+                                        <div class="friend-badge">
+                                            <!--多选框-->
+                                                <el-checkbox
+                                                    v-model="checksingle"
+                                                    @change="handleFriendSelectionChange(friend.nickname )"
+                                                >
+                                                    {{index+1}}
+                                                </el-checkbox>
                                         </div>
 
                                     </div>
@@ -170,7 +186,7 @@
                             </div>
                             <div class="operate">
                                 <el-button type="success" @click="exitgroup">退出</el-button>
-                                <el-button type="success">创建</el-button>
+                                <el-button type="success" @click="create">创建</el-button>
                             </div>
                         </el-dialog>
 <!--                        ****************-->
@@ -750,6 +766,7 @@ const loadInfiniteScroll = () => {
 //*****************
 import {storemessage} from "../store/storemessage.ts";
 import router from "../router";
+import {ElNotification} from "element-plus";
 const store = storemessage()
 //****************
 //调用user.ts里边的sendMessage方法，私聊发送
@@ -850,10 +867,58 @@ const creatIt = () => {
 
 
 //创建群聊
+//输入群聊名
 const inputGroupName = ref('')
 //退出界面
 const exitgroup = () => {
     creatGroup.value = false
+}
+
+//创建群聊
+const create = () =>{
+    userStore.createGroupres(inputGroupName.value , selectedFriends.value).then((result) => {
+        creatGroup.value = false
+    }).catch(async (error: any) => {
+        ElNotification({
+            title:'Error',
+            message:error,
+            type:error,
+        })
+    })
+
+}
+
+//全选框
+const checkAll = ref(false)
+
+const checksingle = ref(false)
+
+//存放选择好友的一个列表
+const selectedFriends = ref([])
+//全选状态改变
+//check用来判断是否为 全选
+const handleCheckAllChange = (check) => {
+    // 遍历所有好友，更新其复选框状态
+    if(check){
+        checksingle.value = true
+        selectedFriends.value = friendsListInfo.value
+        selectedFriends.value.forEach(fri =>{
+            console.log(fri.nickname)
+        })
+    }else{
+        checksingle.value = false
+        selectedFriends.value = []
+    }
+
+}
+// 单个好友复选框状态改变
+const handleFriendSelectionChange = (nickname: string) => {
+    // 如果选中的好友列表中不包含该好友，则添加到选中好友列表中；否则从选中好友列表中移除
+    if (selectedFriends.value.includes(nickname)) {
+        selectedFriends.value = selectedFriends.value.filter(f => f !== nickname)
+    } else {
+        selectedFriends.value.push(nickname)
+    }
 }
 </script>
 
@@ -861,6 +926,7 @@ const exitgroup = () => {
 
 
 .createGroup {
+    background: #f9f9f9;
     width: 100%;
     height: 530px;
     //border: 1px solid red;
@@ -876,7 +942,6 @@ const exitgroup = () => {
         .friend-avatar {
             width: 38px;
             height: 38px;
-
             img {
                 width: 100%;
                 height: 100%;
@@ -886,36 +951,28 @@ const exitgroup = () => {
 
         // 好友消息
         .friend-message {
+            position: relative;
             display: flex;
-            width: 210px;
-            text-align: left;
-            flex-direction: column;
+            align-items: center;
             // 昵称
             .friend-nickname {
-                display: flex;
-                color: #000000;
-                font-size: 12px;
-                font-family: "Alimama DongFangDaKai", serif;
-                justify-content: space-between;
-
-                .friend-badge {
-                    display: flex;
-                    color: #ffffff;
-                    width: 18px;
-                    height: 18px;
-                    font-size: 10px;
-                    font-family: "Alimama ShuHeiTi Bold", serif;
-                    background: red;
-                    border-radius: 50%;
-                    text-align: center;
-                    align-items: center;
-                    justify-content: center;
+                font-weight: bold;
+                .nickname{
+                    margin-right: 50px;
+                    font-weight: bold;
+                    font-family: "Alimama ShuHeiTi Bold" , serif;
+                    color: #000000;
                 }
+
+            }
+            .friend-badge {
+                margin-left: 100px;
             }
 
             // 最新通知
             .friend-latest-notice {
-                width: 210px;
+                margin-left: 20px;
+                width: 100px;
                 color: #000000;
                 font-weight: bold;
                 font-size: 12px;
@@ -936,11 +993,15 @@ const exitgroup = () => {
 
 .information{
     display: flex;
-    width: 60%;
+    width: 100%;
     height: 40px;
-    align-items: center;
-    margin-bottom: 10px;
-    justify-content: space-evenly;
+    margin-bottom: 20px;
+
+    .check-all{
+        position: relative;
+        margin-left: 100px;
+    }
+
 }
 
 //选择

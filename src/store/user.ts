@@ -662,5 +662,23 @@ export const useUser = defineStore("user", {
             return true;
         },
 
+
+        //创建群聊
+        //往后端发送请求
+        async createGroupres(groupname: string , member: []){
+            let create = {
+                type: 'creategroup',
+                //群名
+                groupName: groupname,
+                //创建者
+                sendNickname: this.nickname,
+                //群成员
+                message: member,
+            }
+            //发送创建群聊请求
+            this.webSocketInstance.send(JSON.stringify(create))
+        },
+
+
     },
 })
