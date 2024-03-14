@@ -901,10 +901,7 @@ const handleCheckAllChange = (check) => {
     // 遍历所有好友，更新其复选框状态
     if(check){
         checksingle.value = true
-        selectedFriends.value = friendsListInfo.value
-        selectedFriends.value.forEach(fri =>{
-            console.log(fri.nickname)
-        })
+        selectedFriends.value = friendsListInfo.value.map(friend => friend.nickname)
     }else{
         checksingle.value = false
         selectedFriends.value = []

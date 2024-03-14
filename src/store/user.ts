@@ -258,6 +258,10 @@ export const useUser = defineStore("user", {
                         // console.log(JSON.stringify(this.groupListInfo[0]))
                     }
 
+                    else if (data.type === 'creategroup'){
+
+                    }
+
 
                 };
 
