@@ -156,7 +156,8 @@ export const useUser = defineStore("user", {
                             }
 
                         }
-                    }else if(data.type === 'file'){
+                    }
+                    else if(data.type === 'file'){
                         //寻找发送消息在好友列表中的索引
                         let findIndex2 = this.friendsListInfo.findIndex((object: any) => object.nickname === data.sendNickname);
 
@@ -259,12 +260,20 @@ export const useUser = defineStore("user", {
                     }
 
                     else if (data.type === 'creategroup'){
+                        // let group = {
+                        //     //群名
+                        //     groupnickname: data.groupName,
+                        //     //群成员
+                        //     messages: [{
+                        //         type:'creategroup' ,
+                        //         groupmessage: ,
+                        //     }] as any
+                        // }
 
                     }
 
 
                 };
-
 
 
                 // 监听WebSocket关闭事件
