@@ -229,11 +229,10 @@ const submitCreate = () => {
 
             //    头像
             .avatar{
+                position:relative;
                 width: 84px;
                 height: 84px;
-                cursor: pointer;
-                margin-bottom: 20px;
-
+                margin-bottom: 16px;
 
                 img{
                     width: 100%;
@@ -244,7 +243,7 @@ const submitCreate = () => {
 
             //    账号/昵称
             .nickname{
-                margin-bottom: 10px;
+                margin-bottom: 12px;
 
                 :deep(.el-input__inner){
                     color: #000;
@@ -255,7 +254,7 @@ const submitCreate = () => {
 
             //密码
             .password{
-                margin-bottom: 10px;
+                margin-bottom: 12px;
                 :deep(.el-input__inner){
                     color: #000;
                     font-weight: 600;
@@ -264,7 +263,7 @@ const submitCreate = () => {
             }
             //确认密码
             .password1{
-                margin-bottom: 10px;
+                margin-bottom: 18px;
                 :deep(.el-input__inner){
                     color: #000;
                     font-weight: 600;
@@ -275,8 +274,7 @@ const submitCreate = () => {
             //注册
             .submit{
                 z-index: 2;
-                margin-bottom: 15px;
-                margin-top: 5px;
+                margin-bottom: 50px;
                 button{
                     width: 223px;
                 }
