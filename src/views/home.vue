@@ -39,7 +39,7 @@
                                 </el-icon>
                             </div>
                             <div class="option">
-                                <el-icon>
+                                <el-icon @click="transform">
                                     <WalletFilled/>
                                 </el-icon>
                             </div>
@@ -49,17 +49,35 @@
                                 </el-icon>
                             </div>
 
-                            <!-- 设置对话框 -->
-<!--                            <el-dialog-->
-<!--                                :visible="settingsDialogVisible"-->
-<!--                                @update:visible="settingsDialogVisible = $event"-->
-<!--                                title="修改主题"-->
-<!--                                width="30%">-->
+                            <!--充值-->
+                            <el-dialog
+                                destroy-on-close
+                                v-model="spendvisible"
+                                title="钱包"
+                                width="40%"
+                                center
+                                align-center
+                            >
 
-<!--                                <el-color-picker v-model="selectedColor" show-alpha></el-color-picker>-->
-<!--                                <el-button type="primary" @click="saveAndCloseSettingsDialog">保存</el-button>-->
-<!--                            </el-dialog>-->
+                                <div class="erweima">
+                                    <img  src="../assets/image/theme/home/img/scan.jpg">
+                                </div>
 
+                                
+                                <el-form-item class="inputmoney" label="请输入金额：">
+                                    <el-input class="inputsum" style="width: 360px" placeholder="输入充值金额"/>
+                                    <el-button class="finish" type="success" round @click="finishmoney">充值</el-button>
+                                </el-form-item>
+
+                                <div class="ensure">
+                                    <el-button class="button1" type="primary" @click="transformexit">退出</el-button>
+                                    <el-button class="button2" type="success" @click="save">确定</el-button>
+                                </div>
+
+                            </el-dialog>
+
+
+                            <!--选择主题-->
                             <el-dialog
                                 destroy-on-close
                                 v-model="dialogVisible"
@@ -917,9 +935,56 @@ const handleFriendSelectionChange = (nickname: string) => {
         selectedFriends.value.push(nickname)
     }
 }
+
+//充值窗口弹出
+const spendvisible = ref(false)
+
+const transform = () => {
+    spendvisible.value = !spendvisible.value
+}
+const transformexit = () => {
+    spendvisible.value = !spendvisible.value
+}
+const save = () => {
+    spendvisible.value = !spendvisible.value
+}
+
+const finishmoney = () => {
+    spendvisible.value = !spendvisible.value
+}
 </script>
 
 <style lang="scss" scoped>
+.ensure{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+    .button1{
+        margin-left: 120px;
+    }
+    .button2{
+        margin-right: 120px;
+    }
+}
+.inputmoney{
+    font-family: "Alimama ShuHeiTi Bold" , serif;
+    display: flex;
+    margin-top: 50px;
+    margin-left: 85px;
+
+    .finish{
+        margin-left: 20px;
+    }
+}
+
+.erweima{
+    display: flex;
+    margin-left: 230px;
+    img{
+        width: 250px;
+        height: 250px;
+    }
+}
 
 
 .createGroup {
