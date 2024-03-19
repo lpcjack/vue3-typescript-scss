@@ -65,7 +65,7 @@
 
                                 
                                 <el-form-item class="inputmoney" label="请输入金额：">
-                                    <el-input class="inputsum" style="width: 360px" placeholder="输入充值金额"/>
+                                    <el-input class="inputsum" v-model="moneysun" style="width: 360px"  placeholder="输入充值金额"/>
                                     <el-button class="finish" type="success" round @click="finishmoney">充值</el-button>
                                 </el-form-item>
 
@@ -938,6 +938,7 @@ const handleFriendSelectionChange = (nickname: string) => {
 
 //充值窗口弹出
 const spendvisible = ref(false)
+const moneysun = ref()
 
 const transform = () => {
     spendvisible.value = !spendvisible.value
