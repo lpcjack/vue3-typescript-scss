@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {loginRegister} from "./login-register.ts";
-import {store, getData} from "./persistStore.ts";
+import {getData, store} from "./persistStore.ts";
 
 export const useUser = defineStore("user", {
     // State 相当于组件中的 data属性
@@ -954,7 +954,8 @@ export const useUser = defineStore("user", {
             }catch (error) {
                 throw new Error('请求错误:' + error);
             }
-        }
+        },
+
 
 
     },

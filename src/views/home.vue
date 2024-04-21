@@ -1065,13 +1065,13 @@
 <script lang="ts" setup>
 
 // 点击聊天进入界面
+
 const handleClick1 = (name) => {
-    console.log("选择的好友是："+name)
-    if(name != ''){
+    let findIndex = friendsListInfo.value.findIndex((object: any) => object.nickname === name);
+    if(findIndex){
         flag.value = true
-        friendsInfo.value = name
+        friendsInfo.value = friendsListInfo.value[findIndex]
     }
-    console.log(flag.value)
     searchvisible.value = false
 }
 
