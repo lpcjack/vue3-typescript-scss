@@ -13,3 +13,7 @@ elementApp.use(pinia)
 elementApp.use(router)
 elementApp.mount('#app')
 
+// pinia持久化
+// import persistPlugin from "./store/persistPlugin.ts";
+// pinia.use(persistPlugin)
+// localStorage.clear()

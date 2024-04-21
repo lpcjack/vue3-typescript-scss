@@ -40,6 +40,9 @@
                                         :prefix-icon="Avatar"
                                 />
                             </div>
+                            <div v-if="isValid == 'legality'" style="margin-right: 120px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: green">账号格式正确</div>
+                            <div v-else-if="isValid == 'Unlawful'" style="margin-right: 55px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: red">账号必须6位(数字+字母)</div>
+                            <div v-else style="margin-right: 120px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: #646cff;">账号不能为空</div>
                             <!--密码-->
                             <div class="password">
                                 <el-input
@@ -49,6 +52,9 @@
                                         style="width: 223px;"
                                 ></el-input>
                             </div>
+                            <div v-if="passwordValid =='legality'" style="margin-right: 120px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: green">密码格式正确</div>
+                            <div v-else-if="passwordValid =='Unlawful'" style="margin-right: 50px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: red">密码必须10位(数字+字母)</div>
+                            <div v-if="passwordValid =='null'" style="margin-right: 120px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: #646cff">密码不能为空</div>
                             <div class="password1">
                                 <el-input
                                         placeholder="请输入新密码"
@@ -58,10 +64,17 @@
                                 ></el-input>
                             </div>
 
+                            <div v-if="passwordIssame =='same'" style="margin-right: 120px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: red">新旧密码相同</div>
+                            <div v-else-if="passwordIssame =='Unlawful'" style="margin-right: 50px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: red">密码必须10位(数字+字母)</div>
+                            <div v-else-if="passwordIssame =='NotSame'" style="margin-right: 120px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: green">密码格式正确</div>
+                            <div v-else style="margin-right: 90px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: #646cff">确认密码不能为空</div>
+
                             <!--确定-->
                             <div class="submit">
-                                <el-button color="#446DFF" type="primary" @click="submitCreate" >确定</el-button>
+                                <el-button color="#446DFF" type="primary" @click="onSuccess" >确定</el-button>
                             </div>
+
+                            <Vcode :show="isShow" @success="submitCreate" @close="onClose" @fail="onFail"></Vcode>
 
                             <!--脚页-->
                             <div class="footer">
@@ -83,7 +96,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import {useUser} from "../store/user.ts";
 import {Avatar} from "@element-plus/icons-vue";
@@ -105,71 +118,149 @@ const returnLogin = () => {
         path:'/'
     });
 }
-const submitCreate = () => {
-    if ((nickname.value&&password.value&&enablepassword.value)&&(password.value!=enablepassword.value)) {
-        //revise.revise(nickname.value , password.value ,enablepassword.value)
-        revise.revisesql(nickname.value , password.value , enablepassword.value ).then((result) => {
-            //测试
-            console.log(result)
-            if(result){
-                // 创建连接
-                userStore.createWebSocket(nickname.value).then(async (res: any) => {
-                    if (res) {
-                        ElNotification({
-                            title: '登录成功',
-                            message: '欢迎 ' + nickname.value + ' 回家~',
-                            type: 'success',
-                        })
-                        await router.push({
-                            name: 'home'
-                        })
-                        return
-                    } else {
-                        ElNotification({
-                            title: 'Warning',
-                            message: '登录失败，请重新尝试',
-                            type: 'warning',
-                        })
-                    }
-                }).catch(async (error: any) => {
-                    ElNotification({
-                        title: 'Error',
-                        message: error,
-                        type: 'error',
-                    })
-                })
-            }else {
-                ElNotification({
-                    title: 'Warning',
-                    message: '修改失败，请重新尝试',
-                    type: 'warning',
-                })
-            }
-        }).catch(async (error: any) => {
+const submitCreate = async () => {
+    const flag = await revise.revisesql(nickname.value, password.value, enablepassword.value)
+    if(flag === 'success'){
+        if(await userStore.createWebSocket(nickname.value)){
             ElNotification({
-                title:'Error',
-                message:error,
-                type:error,
+                title: '成功',
+                message: '欢迎'+nickname.value+'回家！！',
+                type: 'success',
             })
-        })
-
+            // 跳转到主页
+            await router.push({
+                name: 'home'
+            })
+        }
+        else {
+            ElNotification({
+                title: '错误',
+                message: '创建连接失败！！！',
+                type: 'error',
+            })
+        }
     }
-    else if(password.value==enablepassword.value){
+    else if (flag === 'failure'){
         ElNotification({
-            title:'温馨提示',
-            message:'新密码与旧密码相同',
-            type:'',
-        })
-    }
-    else{
-        ElNotification({
-            title: 'Warning',
-            message: '请确认输入信息是否正确',
+            title: '温馨提示',
+            message: '修改失败，请重新尝试！！',
             type: 'warning',
+        })
+    }
+    else {
+        ElNotification({
+            title: '温馨提示',
+            message: '出现错误，请重新尝试！！',
+            type: 'error',
         })
     }
 }
 
+import Vcode from "vue3-puzzle-vcode";
+const isShow = ref(false)
+const onSuccess = () => {
+    if(isValid.value == 'legality' && passwordValid.value == 'legality' && passwordIssame.value == 'NotSame'){
+        isShow.value = true
+    }else {
+        ElNotification({
+            title: '温馨提示',
+            message: '输入信息有误！！',
+            type: 'warning',
+        })
+    }
+}
+// 验证失败
+const onClose = () => {
+    isShow.value = false
+}
+// 验证失败
+// 自动刷新
+const onFail = () => {
+
+}
+
+// 正则表达式
+const regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6}$/;
+// 监听账号是否符合标准
+const isValid = ref('empty')
+watch(nickname, (newValue) => {
+    checkAccount(newValue)
+})
+// 检测输入账号合法性
+const checkAccount = (value) => {
+    // 为空
+    if(value === ''){
+        isValid.value = 'empty'
+    }
+    // 合法
+    if(regex.test(value)){
+        isValid.value = 'legality'
+    }
+    // 不合法
+    else {
+        if(value != ''){
+            isValid.value = 'Unlawful'
+        }
+    }
+}
+
+
+// 密码正则表达式
+const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{10}$/;
+// 监听密码是否符合规则
+const passwordValid = ref('null')
+watch(password, (pwdValue) => {
+    checkPassword(pwdValue)
+})
+//检测输入密码合法性
+const checkPassword = (value) => {
+    // 为空
+    if(value === ''){
+        passwordValid.value = 'null'
+    }
+    // 合法
+    if(passwordRegex.test(value)){
+        passwordValid.value = 'legality'
+    }
+    // 不合法
+    else {
+        if(value != ''){
+            passwordValid.value = 'Unlawful'
+        }
+    }
+}
+
+// 确认密码是否与密码相同
+const passwordIssame = ref('empty')
+watch(enablepassword, (value) => {
+    checkout(value)
+})
+const checkout = (value) => {
+    console.log("输出的值为："+value)
+    // 输入为空
+    if(value == ''){
+        passwordIssame.value = 'empty'
+        console.log("标志为："+passwordIssame.value)
+    }
+    else {
+        if(value === password.value){
+            passwordIssame.value = 'same'
+            console.log("标志为："+passwordIssame.value)
+        }
+        else {
+            if(passwordRegex.test(enablepassword.value)){
+                passwordIssame.value = 'NotSame'
+                console.log("标志为："+passwordIssame.value)
+            }else {
+                // 不合法
+                passwordIssame.value = 'Unlawful'
+                console.log("标志为："+passwordIssame.value)
+
+            }
+        }
+    }
+
+}
 </script>
 
 <style lang="scss" scoped>
@@ -179,7 +270,6 @@ const submitCreate = () => {
   //布局
   .layout{
     width: 100%;
-
     .col{
       display: flex;
       align-items: center;
@@ -267,32 +357,28 @@ const submitCreate = () => {
 
       //    账号/昵称
       .nickname{
-        margin-bottom: 12px;
-
-        :deep(.el-input__inner){
+      }
+      .nickname:deep(.el-input__inner){
           color: #000;
           font-weight: 600;
           font-family: "Alimama DongFangDaKai" , serif;
-        }
       }
 
-      //密码
+        //密码
       .password{
-        margin-bottom: 12px;
-        :deep(.el-input__inner){
+      }
+      .password:deep(.el-input__inner){
           color: #000;
           font-weight: 600;
           font-family: "Alimama DongFangDaKai" , serif;
-        }
       }
       //确认密码
       .password1{
-        margin-bottom: 18px;
-        :deep(.el-input__inner){
+      }
+      .password1:deep(.el-input__inner){
           color: #000;
           font-weight: 600;
           font-family: "Alimama DongFangDaKai" , serif;
-        }
       }
 
       //注册

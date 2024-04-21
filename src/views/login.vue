@@ -52,7 +52,21 @@
                                 ></el-input>
                             </div>
 
+                            <!--验证码-->
+                            <div class="Verify">
+                                <el-input
+                                    class="input-verify"
+                                    v-model="verifyCode"
+                                    placeholder="请输入验证码"
+                                    @keyup.enter="submitCreate"
+                                />
+                                <img class="Code" :src="verifySrc" alt="验证码" @click="refreshVerify" />
+                            </div>
 
+                            <!--相应信息提示-->
+                            <div v-if="flag == 'inconsistent'" style="margin-right: 40px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: red">验证码不正确，请重新输入</div>
+                            <div v-else-if="flag == 'NotFind'" style="margin-right: 105px;font-family: 'Alimama DongFangDaKai' , serif;font-size: 14px;color: red">账号密码不正确</div>
+                            <div v-else-if="flag = 'default'" style="margin-top: 14px"></div>
                             <!--提交-->
                             <div class="submit">
                                 <el-button color="#446DFF" type="primary" @click="submitCreate">登录</el-button>
@@ -110,11 +124,15 @@ const automaticLoginCheckBox = ref(false)
 
 const router = useRouter()
 const userStore = useUser()
+const login = loginRegister()
+
+const {loginFlag} = storeToRefs(login)
 
 const loginup =loginRegister()
 
 //通知库组件
 import {ElNotification} from 'element-plus'
+import {storeToRefs} from "pinia";
 
 /**
  * 修改密码跳转
@@ -137,102 +155,85 @@ const signup = () => {
 /**
  * 提交创建登录
  */
-const submitCreate = () => {
-    if (nickname.value&&password.value) {
-        //loginup.login(nickname.value ,password.value)
-        console.log(loginup.loginsql(nickname.value , password.value))
-        loginup.loginsql(nickname.value ,password.value).then((result) => {
-            if(result){
-                userStore.createWebSocket(nickname.value).then(async (res: any) => {
-                    if (res) {
-                        ElNotification({
-                            title: '登录成功',
-                            message: '欢迎 ' + nickname.value + ' 回家~',
-                            type: 'success',
-                        })
-                        await router.push({
-                            name: 'home'
-                        })
-                        return
-                    }
-                    else{
-                        ElNotification({
-                            title: 'Warning',
-                            message: '登录失败，请重新尝试',
-                            type: 'warning',
-                        })
-                    }
-                }).catch(async (error: any) => {
-                    ElNotification({
-                        title: 'Error',
-                        message: error,
-                        type: 'error',
-                    })
+// 默认
+const flag = ref('default')
+const submitCreate = async () => {
+    if (nickname.value&&password.value&&verifyCode.value) {
+        await loginup.loginsql(nickname.value ,password.value ,verifyCode.value)
+        if(loginFlag.value === 'success'){
+            if(await userStore.createWebSocket(nickname.value)){
+                await router.push({
+                    name: 'home'
                 })
-
-            }
-            else{
+                // 清除所有localStorage中的数据
                 ElNotification({
-                    title: '温馨提示',
-                    message: '请输入正确用户账号或密码',
-                    type: 'warning',
+                    title: '登录成功',
+                    message: '欢迎 ' + nickname.value + ' 回家~',
+                    type: 'success',
                 })
             }
-        }).catch(async (error: any) => {
+            // 创建连接失败
+            else {
+                ElNotification({
+                    title:'温馨提示',
+                    message:'创建连接失败！！',
+                    type: "error",
+                })
+            }
+        }
+        // 登录验证返回false
+        else if(loginFlag.value === 'inconsistent') {
+            flag.value = 'inconsistent'
+            refreshVerify();
             ElNotification({
-                title:'Error',
-                message:error,
-                type:error,
+                title:'温馨提示',
+                message:'验证码错误！',
+                type:"warning",
             })
-        })
-        // 创建连接
-    //     userStore.createWebSocket(nickname.value).then(async (res: any) => {
-    //         if (res) {
-    //             ElNotification({
-    //                 title: '登录成功',
-    //                 message: '欢迎 ' + nickname.value + ' 回家~',
-    //                 type: 'success',
-    //             })
-    //             await router.push({
-    //                 name: 'home'
-    //             })
-    //             return
-    //         } else {
-    //             ElNotification({
-    //                 title: 'Warning',
-    //                 message: '登录失败，请重新尝试',
-    //                 type: 'warning',
-    //             })
-    //         }
-    //     }).catch(async (error: any) => {
-    //         ElNotification({
-    //             title: 'Error',
-    //             message: error,
-    //             type: 'error',
-    //         })
-    //     })
-    // } else {
-    //     ElNotification({
-    //         title: 'Warning',
-    //         message: '请输入正确用户账号或密码',
-    //         type: 'warning',
-    //     })
+        }
+        else {
+            flag.value = 'NotFind'
+            await refreshPageAfterDelay(1200); // 5000毫秒（即5秒）后刷新页面
+            ElNotification({
+                title:'温馨提示',
+                message:'账号密码不正确！！',
+                type:"warning",
+            })
+        }
     }
     else{
-        ElNotification({
-            title:'温馨提示',
-            message:'账号密码不能为空！',
-            type:"warning",
-        })
+            ElNotification({
+                title:'温馨提示',
+                message:'账号密码以及验证码不能为空！',
+                type:"warning",
+            })
     }
 }
 
+// 延迟刷新
+// 使用Promise和async/await实现延迟
+function delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-//账号密码存储至数据库
-// 构造要发送的数据对象
+async function refreshPageAfterDelay(delayMs: number): Promise<void> {
+    await delay(delayMs);
+    location.reload();
+}
 
 
-// 发送 POST 请求到后端接口
+
+
+// 验证码
+const verifyCode = ref('')
+// 验证码图片链接
+const verifySrc = ref<string>('http://localhost:8080/api/verify');
+
+// 刷新验证码图片链接
+const refreshVerify = () => {
+    // 将当前时间戳作为查询参数添加到链接中
+    verifySrc.value = `http://localhost:8080/api/verify?${Date.now()}`;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -341,6 +342,26 @@ const submitCreate = () => {
                     color: #000;
                     font-weight: 600;
                     font-family: "Alimama DongFangDaKai" , serif;
+                }
+            }
+
+            // 验证码
+            .Verify{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .input-verify{
+                    width: 133px;
+                    height: 32px;
+                    margin-right: 10px;
+                }
+                .input-verify:deep(.el-input__inner){
+                    color: #000;
+                    font-weight: 600;
+                    font-family: "Alimama DongFangDaKai" , serif;
+                }
+                .Code{
+                    border-radius: 6px;
                 }
             }
 
